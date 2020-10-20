@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const DB_NAME = `demo`
-const DB_URL = '188.188.3.19:27017';
+const DB_URL = 'localhost:27017';
 
 // 数据库连接
 const mongodb = new Promise((resolve, reject) => {
