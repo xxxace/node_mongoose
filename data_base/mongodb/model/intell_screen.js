@@ -3,24 +3,20 @@ const intell_screen = {
     model: {
         title: {
             type: String,
-            require: true
+            required: true
         },
         url: {
             type: String,
-            require: true
+            required: true
         },
-        imgSrc: {
+        img_src: {
             type: String
         },
         date: {
             type: Date,
             default: Date.now()
         },
-        is_default: {
-            type: Number,
-            default: 0
-        },
-        category: {
+        group: {
             id: String,
             name: String
         },

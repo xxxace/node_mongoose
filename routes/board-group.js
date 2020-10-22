@@ -1,13 +1,13 @@
 const express = require('express');
 const {mongodb, Model} = require('../data_base/mongodb/index');
-const intell_screen = require('../data_base/mongodb/model/intell_screen');
+const board_group = require('../data_base/mongodb/model/board_group');
 const router = express.Router();
-const intellScreenModel = new Model(intell_screen.name, intell_screen.model);
+const boardGroupModel = new Model(board_group.name, board_group.model);
 
 // mongodb connection
 mongodb.then(res => {
     router.get('/', (req, res, next) => {
-        res.send('SUCCESS GET /scm');
+        res.send('SUCCESS GET /boardGroup');
     })
 
     // 获取看板信息列表
@@ -16,29 +16,27 @@ mongodb.then(res => {
         let query = Object.assign(req.query)
         let {pageNo, pageSize} = query
 
-        if (query.title) {
-            filters.title = new RegExp(`${query.title}`)
+        if (query.groupName) {
+            filters.name = new RegExp(`${query.groupName}`)
         }
 
-        if (query.groupId) {
-            filters['group.id'] = query.groupId
-        }
-
-        if (query.isDefault) {
-            filters.is_default = query.isDefault
+        if (query.id) {
+            filters.id = query.id
         }
 
         let limit = (pageSize || 20) * 1
         let page = ((pageNo || 1) - 1) * limit
-        intellScreenModel.find(filters).skip(page).limit(limit).then((data, error) => {
-            intellScreenModel.find(filters).countDocuments({}).then(total => {
+        boardGroupModel.find(filters).skip(page).limit(limit).then((data, error) => {
+            boardGroupModel.find(filters).countDocuments({}).then(total => {
                 res.send({
+                    code: 200,
                     result: {
                         records: data,
                         current: (query.pageNo || 1) * 1,
                         size: limit,
                         total: total || 0,
-                    }
+                    },
+                    success:true
                 })
             })
         })
@@ -48,20 +46,19 @@ mongodb.then(res => {
     router.post('/add', (req, res, next) => {
         console.log(req.body);
         let body = req.body
-        if (body.imgSrc) body.img_src = body.imgSrc
-        if (body.groupId) {
-            body.group = {
-                id: body.groupId,
-                name: body.groupName
-            }
-        }
-        intellScreenModel.create(body).then(data => {
-            res.send(data);
+        boardGroupModel.create(body).then(data => {
+            res.send({
+                code: 200,
+                result: data,
+                message: `保存成功！`,
+                success:true
+            });
         }).catch((err) => {
             console.log(`新增数据失败${err}`)
             res.send({
                 code: 500,
                 message: `新增数据失败：${err.message}`,
+                success:false
             });
         })
     })
