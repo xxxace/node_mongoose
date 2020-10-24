@@ -1,15 +1,18 @@
-var createError = require('http-errors');
+// 引入模块
+const createError = require('http-errors');
 const cors = require('cors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
-let intellScreenRouter = require('./routes/intell-screen');
-let boardGroupRouter = require('./routes/board-group');
-var app = express();
+// 自定义模块
+const indexRouter = require('./routes/index');
+const intellScreenRouter = require('./routes/intell-screen');
+const boardGroupRouter = require('./routes/board-group');
+const boardDefaultRouter = require('./routes/board-default');
+
+const app = express();
 
 // 跨域解决
 app.use(cors());
@@ -24,10 +27,11 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// router
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/scm', intellScreenRouter);
-app.use('/boardGroup',boardGroupRouter);
+app.use('/boardGroup', boardGroupRouter);
+app.use('/boardDefault', boardDefaultRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
